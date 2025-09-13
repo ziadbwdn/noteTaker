@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MBT Admin - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "admin-dark": "#2d3748",
+              "admin-darker": "#1a202c",
+              "admin-orange": "#ff8c00",
+              "admin-orange-hover": "#ff7700",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .sidebar-item:hover {
+        background-color: rgba(255, 140, 0, 0.1);
+        border-left: 3px solid #ff8c00;
+      }
+      .sidebar-item.active {
+        background-color: #ff8c00;
+        border-left: 3px solid #ff7700;
+      }
+      .table-row:hover,
+      .note-item:hover {
+        background-color: rgba(249, 250, 251, 1);
+      } /* bg-gray-50 */
+      .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .note-content {
+        min-height: 200px;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <div id="app" class="flex h-screen">
+      <!-- Sidebar -->
+      <div class="w-64 bg-admin-darker text-white flex flex-col shadow-xl">
+        <div class="p-4 bg-admin-dark border-b border-gray-600">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-8 h-8 bg-admin-orange rounded flex items-center justify-center"
+            >
+              <span class="text-white font-bold text-sm">M</span>
+            </div>
+            <div>
+              <h1 class="font-bold text-lg">MBT Admin</h1>
+              <p class="text-xs text-gray-400">Dashboard</p>
+            </div>
+          </div>
+        </div>
+        <div id="sidebar-nav" class="flex-1 py-4">
+          <div class="px-4 mb-4 mt-6">
+            <p
+              class="text-xs uppercase tracking-wider text-gray-400 font-semibold"
+            >
+              MANAGEMENT
+            </p>
+          </div>
+          <nav class="space-y-1">
+            <a
+              href="#"
+              data-view="users"
+              class="sidebar-item flex items-center px-4 py-3 text-sm transition-all duration-200"
+            >
+              <svg
+                class="w-4 h-4 mr-3"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+                ></path>
+              </svg>
+              Users
+            </a>
+            <a
+              href="#"
+              data-view="notes"
+              class="sidebar-item flex items-center px-4 py-3 text-sm transition-all duration-200"
+            >
+              <svg
+                class="w-4 h-4 mr-3"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                ></path>
+              </svg>
+              Notes
+            </a>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Main Content Area (Populated by JS) -->
+      <div
+        id="main-content-area"
+        class="flex-1 flex flex-col overflow-hidden"
+      ></div>
+    </div>
+
+    <!-- User Modal (Global) -->
+    <div
+      id="addUserModal"
+      class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50"
+    >
+      <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold">Add New User</h3>
+            <button
+              data-action="close-user-modal"
+              class="text-gray-400 hover:text-gray-600"
+            >
+              <svg
+                class="w-6 h-6 pointer-events-none"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
+              </svg>
+            </button>
+          </div>
+          <form id="addUserForm" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Full Name</label
+              ><input
+                type="text"
+                name="name"
+                class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-orange"
+                required
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Email</label
+              ><input
+                type="email"
+                name="email"
+                class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-orange"
+                required
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Role</label
+              ><select
+                name="role"
+                class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-admin-orange"
+              >
+                <option>Subscriber</option>
+                <option>Author</option>
+                <option>Editor</option>
+                <option>Administrator</option>
+              </select>
+            </div>
+          </form>
+          <div class="flex justify-end gap-3 mt-6">
+            <button
+              data-action="close-user-modal"
+              class="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+            <button
+              data-action="add-user"
+              class="px-4 py-2 bg-admin-orange hover:bg-admin-orange-hover text-white rounded"
+            >
+              Add User
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/index.js"></script>
+  </body>
+</html>
